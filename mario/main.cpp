@@ -1,17 +1,18 @@
 #include "allclasses.h"
 #include <iostream>
+#include "playercharacter.h"
 int main() {
 
-	Cleric cl1;
+	PlayerCharacter p1(new Cleric());
 	for (int i = 0; i < 2; i++)
 	{
-		std::cout << "Cleric \n"
-			<< "-level" << cl1.getcurrentlvl() << std::endl
-			<< "-MaxHp:" << cl1.getMaxHp() << std::endl
-			<< "-Strength:" << cl1.getstr() << std::endl
-			<< "-Intellect:" << cl1.getint() << std::endl
-			<< "-EXP" << cl1.getcurrentexp() << "/" << cl1.getexptonextlvl() << '\n';
-		cl1.gainEXP(100);
+		std::cout <<p1.getClassName()
+			<< "-level" << p1.getcurrentlvl() << std::endl
+			<< "-MaxHp:" << p1.getmax() << std::endl
+			<< "-Strength:" << p1.getstrength() << std::endl
+			<< "-Intellect:" << p1.getintellect() << std::endl
+			<< "-EXP" << p1.getcurrentexp() << "/" << p1.getexptonextlvl() << '\n';
+		p1.gainEXP(100);
 
 	}
 		return 0;

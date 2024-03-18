@@ -8,7 +8,7 @@ public:
 	stattype intellect;
 	Statblock() {
 		strength =(stattype) 1u;
-		intellect = (stattype)2u;
+		intellect = (stattype)1u;
 	}
 
 	explicit Statblock(stattype str,stattype inte): strength(str),intellect(inte){}
@@ -20,9 +20,10 @@ public:
 		return intellect;
 
 	}
-	stattype increasestat(stattype strgrowth, stattype intgrowth) {
-		return strength += strgrowth;
-		return intellect += intgrowth;
+	bool increasestat(stattype strgrowth, stattype intgrowth) {
+		 strength += strgrowth;
+		 intellect += intgrowth;
+		 return true;
 
 	}
 
