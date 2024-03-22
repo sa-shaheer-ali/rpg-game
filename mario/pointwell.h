@@ -55,14 +55,24 @@ public:
 		return Max += grow;
 
 	}
-	welltype setMax(welltype Growth) {
-		
-		Max = Growth;
-		return Max;
+	bool setMax(welltype Growth) {
+		if (Growth < 1) {
+			return false;
+		}
+
+		Max= Growth;
+		if (Current >Max){
+			Current = Max;
+				return true;
+
+		}
 	}
 	welltype getcurrent() {
 		return Current;
+
 	}
+	
+
 
 
 private:

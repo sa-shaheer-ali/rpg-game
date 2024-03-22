@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ability.h" />
     <ClInclude Include="allclasses.h" />
     <ClInclude Include="cleric.h" />
     <ClInclude Include="playercharacter.h" />

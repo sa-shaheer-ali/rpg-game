@@ -1,27 +1,34 @@
 #pragma once
-#include <cstdint>
 #include "statblock.h"
 #include "pointwell.h"
-#include <memory>
+#include "ability.h"
+#include <cstdint>
 #include <string>
+#include <vector>
+#define BaseStr 10
+#define BaseInt 8
+#define BaseAgi 5
+
 typedef std::uint64_t extype;
 typedef std::int16_t leveltype;
-class PlayerCharacterDelegate: public Statblock ,public Pointwell{
+class PlayerCharacterDelegate: public Statblock{
 public:
 
-	static const extype LEVEL2At = 100u;
-	PlayerCharacterDelegate(): Statblock(0u,0u) {
+	static const extype LEVEL2AT = 100u;
+
+	PlayerCharacterDelegate(): Statblock(0u,0u,0u) {
 		CurrentLevel = 1u;
 		CurrentEXP = 0u;
-		EXPToNextLevel = LEVEL2At;
-		HP = std::make_unique<Pointwell>();
+		EXPToNextLevel = LEVEL2AT;
+		HP = (welltype)1u;
+		
 
 	}
-	extype gainEXP(extype EX) {
+	void gainEXP(extype EX) {
 		CurrentEXP += EX;
 		while (check_if_leveled()) {}
 	
-
+		
 	}
 	leveltype getcurrentlvl() {
 		return CurrentLevel;
@@ -33,15 +40,14 @@ public:
 		return EXPToNextLevel;
 
 	}
-	void gainEXP(extype exp) {
-		 CurrentEXP += exp;
-		 while (check_if_leveled()){
-		 }
-		 
-		
-	}
+	
+
 	virtual void LevelUP() = 0;
 	virtual std::string getClassName() = 0;
+
+	Pointwell HP;
+	Pointwell* MP;
+	std::vector <Ability> abilities;
 
 
 protected:
@@ -56,70 +62,79 @@ protected:
 			LevelUP();
 			EXPToNextLevel *= LevelScaler;
 			return true;
-
-
-
 		}
 		return false;
 	}
 };
-std::unique_ptr <Pointwell>HP;
 
+#define PCCONSTRUCT  \
+HP.setMax(BASEMP);\
+HP.increase(BASEMP);\
+    increasestat(BaseStr, BaseInt, BaseAgi);
+
+#define LEVELUP  \
+     HP.setMax(((BASEMP / 2.f) + MP->getMax()));\
+    HP.increase((welltype)(BASEMP / 2.f));\
+    increasestat((stattype)((BaseStr + 1u) / 2.f), (stattype)((BaseInt + 1u) / 2.f), (stattype)((BaseAgi + 1u) / 2.f));\
+}
 
 
 class Cleric : public PlayerCharacterDelegate {
 public:
-	static const welltype BASEHP = (welltype)14u;
-	static const stattype BaseStr = (stattype)2u;
-	static const stattype BaseInt = (stattype)3u;
-
-
-
-	Cleric() :PlayerCharacterDelegate() {
-		HP->setMax(BASEHP);
-		HP->increase(BASEHP);
-		increasestat(BaseStr, BaseInt);
+    static const welltype BASEMP = (welltype)14;
+    static const stattype BASESTR = (stattype)3;
+    static const stattype BASEINT = (stattype)5;
+    static const stattype BASEAGI = (stattype)1;
+	static const welltype BASEMP = (welltype)10u;
+	 
+	std::string getClassName() override { return std::string("Cleric"); }
+	Cleric() : PlayerCharacterDelegate() {
+		PCCONSTRUCT
+			MP = new Pointwell();
+    MP.setMax(BASEMP);
+    MP.increase(BASEMP);
+	abilities.emplace_back("heal", 2u, 1u, ABILITYTARGET::ALLY, 2u,ABILITYSCALER::INT);
 	}
-	std::string getClassName() override {return std::string("Cleric");}
+		Pointwell *MP;
 private:
-	//dividing by 2 to update the hp  for next level
+	void LevelUP() override {
+		LEVELUP
+			MP.setMax((welltype)((BASEMP / 2.f) + MP->getMax())); 
+			MP.increase((welltype)(BASEMP / 2.f)); 
+			if (CurrentLevel==2)
+			{
 
-	virtual void LevelUP()override {
-		HP->setMax((welltype)((BASEHP/2) + HP->getMax()));
-		//using base/2 for the same thing
-		//adding +1 bcz  if there is an od case it will came back toit orignal number so increaseing by +1 (41:29)
-		increasestat((stattype)((BaseStr+1u)/2.f), (stattype)((BaseInt+1u)/2.f));
+			}
+			else {}
 	}
-
 };
+
+
+
 class PlayerCharacter {
 private:
 	PlayerCharacterDelegate* pcclass;
-	public:
+public:
 	PlayerCharacter() = delete;
-	PlayerCharacter(PlayerCharacterDelegate * pc):pcclass(pc){}
+	PlayerCharacter(PlayerCharacterDelegate* pc) :pcclass(pc) {}
+	~PlayerCharacter() { delete pcclass; pcclass = nullptr; }
 
 
-
-	std::string getClassName() { pcclass->getClassName(); }
-	leveltype getcurrentlvl() { pcclass->getcurrentlvl(); }
-	extype getcurrentexp() { pcclass->getcurrentexp(); }
-	extype getexptonextlvl() { pcclass->getexptonextlvl(); }
-	welltype getcurrenthp() { pcclass->getcurrent(); }
-	welltype getmax() { pcclass->getMax(); };
-	stattype getstrength() { pcclass->getstr(); }
-	stattype getintellect() { pcclass->getint();}
+	std::string getClassName() { return  pcclass->getClassName(); }
+	leveltype getcurrentlvl() { return  pcclass->getcurrentlvl(); }
+	extype getcurrentexp() { return pcclass->getcurrentexp(); }
+	extype getexptonextlvl() { return pcclass->getexptonextlvl(); }
+	welltype getcurrent() { return  pcclass->HP.getcurrent(); }
+	welltype getmax() { return pcclass->HP.getMax(); };
+	stattype getstrength() { return pcclass->getstr(); }
+	stattype getintellect() { return pcclass->getint(); }
+	stattype getagli() { return pcclass->getagl(); }
+	stattype getarmo() { return pcclass->getarm(); }
+	stattype getelemet() { return pcclass->getelem(); }
+	std::vector <Ability> getabilities() { return pcclass->abilities; }
 	void gainEXP(extype exp) { pcclass->gainEXP(exp); }
-	void takeDamage(welltype amt) { pcclass->decrease(amt); }
-	void heal(welltype amt) { pcclass->increase(amt); }
-
-
-
-
-
-
-
-
+	void takeDamage(welltype amt) { pcclass->HP.decrease(amt); }
+	//void heal(welltype amt) { pcclass->MP->heal(amt); }
 
 
 };

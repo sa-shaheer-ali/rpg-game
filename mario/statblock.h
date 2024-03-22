@@ -6,24 +6,24 @@ class Statblock {
 public:
 	stattype strength;
 	stattype intellect;
-	Statblock() {
-		strength =(stattype) 1u;
-		intellect = (stattype)1u;
-	}
+	stattype agility;
+	stattype armor;
+	stattype elmenetres;
 
-	explicit Statblock(stattype str,stattype inte): strength(str),intellect(inte){}
-	stattype getstr() {
-		return strength;
-
-	}
-	stattype getint() {
-		return intellect;
-
-	}
-	bool increasestat(stattype strgrowth, stattype intgrowth) {
+	//this is the default constructor:)
+	explicit Statblock(stattype str = 1, stattype inte = 1, stattype agil = 1, stattype arm = 0, stattype elem = 0)
+		: strength(str), intellect(inte), agility(agil), armor(arm), elmenetres(elem) {}
+	stattype getstr() { return strength; }
+	stattype getint() { return intellect; }
+	stattype getagl() { return agility; }
+	stattype getarm(){return armor; }
+	stattype getelem(){return elmenetres;}
+	void increasestat(stattype strgrowth=0, stattype intgrowth=0,stattype agilgrowth=0,stattype armorgrowth=0,stattype elemgrowth=0) {
 		 strength += strgrowth;
 		 intellect += intgrowth;
-		 return true;
+		 agility += agilgrowth;
+		 armor += armorgrowth;
+		 elmenetres += elemgrowth;
 
 	}
 
