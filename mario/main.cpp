@@ -1,28 +1,33 @@
-
 #include <iostream>
 #include "playercharacter.h"
+#include "types.h"
 int main() {
 
+	// just test code for now, replace 'Warrior' with your class to test
 	PlayerCharacter p1(new Warrior());
-	for (int i = 0; i < 2; i++)
-	{
-		std::cout <<p1.getClassName()<<std::endl
-			<< "-level:" << p1.getcurrentlvl() << std::endl
-			<< "-MaxHp:" <<  p1.getcurrent()<< std::endl
-			<< "-Strength:" << p1.getstrength() << std::endl
-			<< "-Intellect:" << p1.getintellect() << std::endl
-			<< "-EXP:" << p1.getcurrentexp() << "/" << p1.getexptonextlvl() << '\n'<<
-			"Agility"<<p1.getagli() << '\n' <<
-			"Armor"<<p1.getarmo() << '\n' <<
-			"Resist"<<p1.getelemet() << '\n';
-		auto ALLAbilities = p1.getabilities();
-		for (auto &abil:ALLAbilities)
-		{
-			std::cout << " -" << abil.name << '\n';
+	for (int i = 0; i < 2; i++) {
+		std::cout
+			<< p1.getClassName()
+			<< " Level " << p1.getLevel() << '\n'
+			<< "-EXP: " << p1.getCurrentEXP() << '/' << p1.getEXPToNextLevel() << '\n'
+			<< "-HP: " << p1.getCurrentHP() << '/' << p1.getMaxHP() << '\n'
+			<< "-MP: " << p1.getCurrentMP() << '/' << p1.getMaxMP() << '\n'
+			<< "-Stength: " << p1.getStrength() << '\n'
+			<< "-Intellect: " << p1.getIntellect() << '\n'
+			<< "-Agility: " << p1.getAgility() << '\n'
+			<< "-Armor: " << p1.getArmor() << '\n'
+			<< "-Resist: " << p1.getElementRes() << '\n';
 
+		auto AllAbilities = p1.getAbilityList();
+
+		std::cout << "-Abilities:\n";
+		for (auto& abil : AllAbilities) {
+			std::cout << "  -" << abil.Name << '\n';
 		}
-		p1.gainEXP(100);
 
+		if (i < 1)
+			p1.gainEXP(100u);
 	}
-		return 0;
+
+	return 0;
 }
