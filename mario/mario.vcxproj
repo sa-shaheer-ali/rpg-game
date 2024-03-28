@@ -137,6 +137,7 @@
     <ClInclude Include="allclasses.h" />
     <ClInclude Include="buff.h" />
     <ClInclude Include="cleric.h" />
+    <ClInclude Include="corestats.h" />
     <ClInclude Include="playercharacter.h" />
     <ClInclude Include="rogue.h" />
     <ClInclude Include="statblock.h" />
